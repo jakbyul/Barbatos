@@ -1,0 +1,237 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>현재 원신 픽업 배너</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: auto;
+            margin: 0;
+            margin-top: 40px;
+            background-color: #f5f5f5;
+            font-family: 'Arial', sans-serif;
+        }
+
+        #banner-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+
+        #banner {
+            display: flex;
+        }
+
+        .banner-side{
+            width: 10px;
+            padding: 20px;
+        }
+
+        .banner-side img{
+            width: 220px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        #banner-container {
+            position: relative;
+            width: 75%;
+            margin: 20px auto;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        #banner-slider {
+            display: flex;
+            width: 300%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .banner-slide {
+            min-width: 33.33%;
+            height: auto;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .banner-slide img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        #pickup-counter {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            max-width: 70%; /* 원하는 최대 너비 설정 */
+        }
+
+        .character-pickups {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            
+        }
+
+        .character-pickup {
+            flex: 0 0 calc(11.11% - 10px);
+            margin: 10px;
+            box-sizing: border-box;
+            text-align: center;
+
+            position: relative;
+            display: inline-block;
+        }
+
+        .badge {
+            position: absolute;
+            top: -7px;
+            right: 34px;
+            background-color: rgb(134, 189, 252); /* 배경색 설정 */
+            color: white; /* 글자색 설정 */
+            padding: 4px 8px; /* 패딩 설정 */
+            border-radius: 50%; /* 둥근 형태로 설정 */
+            font-size: 12px; /* 글자 크기 설정 */
+        }
+        .new_badge {
+            background-color: rgb(255, 133, 19);
+        }
+
+        .character-img {
+            max-width: 50px;
+            max-height: 50px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+
+        p {
+            margin: 0;
+            font-size: 1rem;
+            color: #555;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+</head>
+<body>
+<div id="banner-title">4.4 &nbsp; &nbsp;   원신 전반 픽업 &nbsp; &nbsp;&nbsp; &nbsp;   남은 시간 : <span id="timer"></span></div>
+    
+
+<div id="banner">
+    <div class="banner-side">
+        <img src="{% static 'images/ads1.png' %}" alt="광고1">
+    </div>
+
+    <div id="banner-container"><a href="https://genshin.gamedot.org/?mid=genshinkit">
+        <div id="banner-slider">
+            
+            <div class="banner-slide">
+                <img src="{% static 'images/banner1.jpg' %}" alt="캐릭터 픽업 배너 1">
+            </div>
+            <div class="banner-slide">
+                <img src="{% static 'images/banner2.jpg' %}" alt="캐릭터 픽업 배너 2">
+            </div>
+            <div class="banner-slide">
+                <img src="{% static 'images/banner3.jpg' %}" alt="무기 픽업 배너">
+            </div>
+        </div></a>
+    </div>
+</div>
+
+
+<div id="pickup-counter">
+    <div class="character-pickups">
+        {% for item in books %}
+        
+        <div class="character-pickup"><a href="https://namu.wiki/w/{{item.name}}{{item.link}}">
+            <img class="character-img" src="{% static 'images/character/'|add:item.name|add:'.png' %}" alt="{{ item.name}}">
+            {% if item.new %}
+                <div class="badge">{{item.new}}</div>
+            {% else %}
+                <div class="badge new_badge">N</div>
+            {% endif %}
+            
+            <p>{{ item.name}} : {{ item.pick }}일</p></a>
+        </div>
+        {% endfor %}
+
+    
+    </div>
+</div>
+
+<script>
+    const bannerSlider = document.getElementById('banner-slider');
+    const bannerSlides = document.querySelectorAll('.banner-slide');
+
+    let currentIndex = 0;
+
+    function showSlide(index) {
+        currentIndex = index;
+        const newPosition = -index * 33.33 + '%';
+        bannerSlider.style.transform = 'translateX(' + newPosition + ')';
+    }
+
+    function showPrevious() {
+        if (currentIndex > 0) {
+            showSlide(currentIndex - 1);
+        }
+    }
+
+    function showNext() {
+        if (currentIndex < bannerSlides.length - 1) {
+            showSlide(currentIndex + 1);
+        } else {
+            showSlide(0);
+        }
+    }
+
+    setInterval(showNext, 5000);
+
+    const targetDate = new Date('2024-02-20T19:00:00');
+
+        // 타이머 업데이트 함수
+        function updateTimer() {
+            const currentDate = new Date();
+            const timeDifference = targetDate - currentDate;
+
+            if (timeDifference > 0) {
+                const seconds = Math.floor((timeDifference / 1000) % 60);
+                const minutes = Math.floor((timeDifference / (1000 * 60)) % 60);
+                const hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24);
+                const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+                document.getElementById('timer').innerHTML = `${days}일 ${hours}시간 ${minutes}분 ${seconds}초`;
+            } else {
+                document.getElementById('timer').innerHTML = '이미 지났습니다.';
+            }
+        }
+
+        // 매 초마다 타이머 업데이트
+        setInterval(updateTimer, 1000);
+
+        // 초기 업데이트
+        updateTimer();
+
+
+</script>
+
+</body>
+</html>

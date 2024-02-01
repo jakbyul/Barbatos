@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게임 캐릭터 배너 웹페이지</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f1f1;
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        .current-banner {
+            flex: 1;
+            position: relative;
+        }
+        .banner-slider {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+        }
+        .banner-slider img {
+            width: 100%;
+            height: auto;
+            flex-shrink: 0;
+            transition: transform 0.5s ease-in-out;
+        }
+        .previous-banner,
+        .next-banner {
+            flex-basis: 15%;
+            cursor: pointer;
+        }
+        .character-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+        .character {
+            margin: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>게임 캐릭터 배너 웹페이지</h1>
+    </header>
+    <div class="container">
+        <div class="previous-banner" onclick="changeSlide(-1)">
+        </div>
+        <div class="current-banner">
+            <h2>현재 픽업 중인 배너</h2>
+            <div class="banner-slider">
+                <img src="current_pickup_banner.jpg" alt="현재 픽업 배너">
+                <img src="previous_pickup_banner.jpg" alt="이전 픽업 배너">
+                <img src="next_pickup_banner.jpg" alt="다음 픽업 배너">
+            </div>
+        </div>
+        
+        <div class="next-banner" onclick="changeSlide(1)">
+        </div>
+    </div>
+    <div class="character-list">
+        <div class="character">
+            <img src="character1.jpg" alt="캐릭터 1">
+            <p>픽업까지 3일 남음</p>
+        </div>
+        <div class="character">
+            <img src="character2.jpg" alt="캐릭터 2">
+            <p>픽업까지 5일 남음</p>
+        </div>
+        <!-- 추가적인 캐릭터 정보를 필요에 따라 반복해서 추가할 수 있습니다. -->
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.banner-slider img');
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 0) {
+                currentSlide = slides.length - 1;
+            } else if (currentSlide >= slides.length) {
+                currentSlide = 0;
+            }
+
+            updateSlider();
+        }
+
+        function updateSlider() {
+            slides.forEach((slide, index) => {
+                slide.style.transform = `translateX(${(index - currentSlide) * 100}%)`;
+            });
+        }
+    </script>
+</body>
+</html>
